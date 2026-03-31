@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3Fit — Plan Virtual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --lime: #C8F53A;
+    --dark: #0D0D0D;
+    --card-bg: #111111;
+    --card-featured: #131A05;
+    --text: #F0EDDE;
+    --muted: #6E6E6E;
+    --border: #2A2A2A;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--dark); color: var(--text); overflow-x: hidden; }
+
+  /* ——— HERO ——— */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center; padding: 4rem 2rem 7rem;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 65% 55% at 50% 65%, #C8F53A12 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .brand {
+    margin-bottom: 2.8rem;
+    opacity: 0; animation: fadeUp 0.7s 0.2s forwards;
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+  }
+  .brand-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem; line-height: 1;
+    color: var(--lime); letter-spacing: 0.04em;
+  }
+  .brand-name sup {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; vertical-align: super;
+    color: var(--text); opacity: 0.4;
+  }
+  .brand-tagline {
+    font-size: 0.62rem; font-weight: 500;
+    letter-spacing: 0.5em; text-transform: uppercase;
+    color: var(--muted); margin-top: 2px;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.68rem; font-weight: 500;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--lime); margin-bottom: 1.8rem;
+    opacity: 0; animation: fadeUp 0.8s 0.38s forwards;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4.5rem, 15vw, 12rem);
+    line-height: 0.9; letter-spacing: 0.02em;
+    text-transform: uppercase; color: var(--text);
+    opacity: 0; animation: fadeUp 0.9s 0.55s forwards;
+  }
+  .hero-title span { color: var(--lime); display: block; }
+  .hero-sub {
+    font-size: 1rem; font-weight: 300; color: var(--muted);
+    margin-top: 2rem; max-width: 380px; line-height: 1.7;
+    opacity: 0; animation: fadeUp 0.9s 0.72s forwards;
+  }
+  .hero-scroll {
+    position: absolute; bottom: 2.5rem; left: 0; right: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    opacity: 0; animation: fadeUp 0.8s 1.3s forwards;
+  }
+  .hero-scroll span { font-size: 0.63rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+  .scroll-line { width: 1px; height: 48px; background: linear-gradient(to bottom, var(--muted), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+  @keyframes scrollPulse { 0%,100%{opacity:.35;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(1.1)} }
+
+  /* ——— MARQUEE ——— */
+  .marquee-strip {
+    overflow: hidden; padding: 1.5rem 0;
+    border-top: 1px solid #1C1C1C; border-bottom: 1px solid #1C1C1C;
+  }
+  .marquee-track {
+    display: flex; gap: 2.5rem;
+    animation: marquee 18s linear infinite; width: max-content;
+  }
+  .marquee-track span { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: #1C1C1C; letter-spacing: 0.04em; white-space: nowrap; }
+  .marquee-track span.a { color: var(--lime); opacity: 0.15; }
+  @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* ——— SHARED SECTION ——— */
+  .section-wrap { max-width: 1080px; margin: 0 auto; padding: 5.5rem 2rem; }
+  .section-eyebrow { font-size: 0.66rem; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--lime); margin-bottom: 1rem; }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.6rem, 6vw, 4.5rem); line-height: 1; margin-bottom: 3.5rem; color: var(--text); }
+
+  /* ——— MÉTODOS ——— */
+  .metodos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem; }
+  .metodo-card {
+    border: 1px solid var(--border); border-radius: 18px;
+    padding: 2rem 1.6rem; background: var(--card-bg);
+    position: relative; overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .metodo-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; background: var(--border); transition: background 0.3s;
+  }
+  .metodo-card:hover { border-color: #3C3C3C; transform: translateY(-4px); }
+  .metodo-card:hover::before { background: var(--lime); }
+  .metodo-num {
+    font-family: 'Bebas Neue', sans-serif; font-size: 3.8rem;
+    line-height: 1; color: var(--lime); opacity: 0.65; margin-bottom: 0.4rem;
+  }
+  .metodo-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.55rem; line-height: 1.1; color: var(--text); margin-bottom: 1rem; }
+  .metodo-list { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+  .metodo-list li { font-size: 0.82rem; font-weight: 300; color: var(--muted); line-height: 1.45; padding-left: 14px; position: relative; }
+  .metodo-list li::before { content: ''; position: absolute; left: 0; top: 6px; width: 5px; height: 5px; border-radius: 50%; background: var(--lime); opacity: 0.6; }
+
+  /* ——— PLANES ——— */
+  .plans-bg { background: #0A0A0A; border-top: 1px solid #1A1A1A; border-bottom: 1px solid #1A1A1A; }
+  .plans-grid { display: flex; justify-content: center; }
+
+  .plan-card {
+    border: 1px solid var(--border); border-radius: 20px;
+    padding: 2.4rem 2rem; background: var(--card-bg);
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; gap: 1.4rem;
+    transition: border-color 0.3s, transform 0.3s;
+    max-width: 380px; width: 100%;
+  }
+  .plan-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: var(--border); transition: background 0.3s;
+  }
+  .plan-card:hover { border-color: #3C3C3C; transform: translateY(-4px); }
+  .plan-card:hover::before { background: var(--lime); opacity: 0.4; }
+
+  .plan-card.featured { border-color: var(--lime); background: var(--card-featured); }
+  .plan-card.featured::before { background: var(--lime); }
+  .plan-card.featured:hover { border-color: #a8cf2a; }
+
+  .badge {
+    position: absolute; top: 2rem; right: 1.4rem;
+    background: var(--lime); color: #0D0D0D;
+    font-size: 0.6rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 100px;
+  }
+  .plan-type { font-size: 0.64rem; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: var(--lime); }
+  .plan-name { font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; line-height: 1; color: var(--text); }
+  .plan-price { display: flex; align-items: baseline; gap: 6px; }
+  .price-amount { font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; line-height: 1; color: var(--text); }
+  .price-label { font-size: 0.85rem; color: var(--muted); font-weight: 300; }
+  .divider { height: 1px; background: var(--border); }
+
+  .features { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; flex: 1; }
+  .features li { font-size: 0.85rem; font-weight: 300; color: var(--muted); line-height: 1.45; padding-left: 16px; position: relative; }
+  .features li::before { content: ''; position: absolute; left: 0; top: 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--lime); }
+  .features li strong { font-weight: 500; color: var(--text); }
+
+  .plan-cta {
+    display: block; width: 100%; padding: 0.92rem;
+    border-radius: 12px; border: 1px solid var(--border);
+    background: transparent; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+    font-weight: 500; letter-spacing: 0.04em; text-align: center;
+    cursor: pointer; transition: background 0.25s, border-color 0.25s;
+    text-decoration: none;
+  }
+  .plan-cta:hover { background: var(--border); border-color: #3C3C3C; }
+  .plan-card.featured .plan-cta { background: var(--lime); border-color: var(--lime); color: #0D0D0D; font-weight: 700; }
+  .plan-card.featured .plan-cta:hover { background: #d9ff4a; border-color: #d9ff4a; }
+
+  /* ——— FOOTER ——— */
+  .footer { border-top: 1px solid #1A1A1A; padding: 4rem 2rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
+  .footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: var(--lime); letter-spacing: 0.06em; }
+  .footer-sub { font-size: 0.65rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--muted); margin-top: -4px; }
+  .footer p { font-size: 0.8rem; font-weight: 300; color: var(--muted); max-width: 400px; line-height: 1.7; margin-top: 0.8rem; }
+
+  /* ——— ANIMATIONS ——— */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+  .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.65s ease, transform 0.65s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 620px) {
+    .metodos-grid { grid-template-columns: 1fr; }
+    .section-wrap { padding: 4rem 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="brand">
+    <p class="brand-name"><span style="color:var(--text)">3</span>Fit<sup>&reg;</sup></p>
+    <p class="brand-tagline">Método · Resultado</p>
+  </div>
+  <p class="hero-eyebrow">Entrenamiento personalizado · Basado en ciencia</p>
+  <h1 class="hero-title">
+    Nace del
+    <span>Movimiento.</span>
+  </h1>
+  <p class="hero-sub">Metodología progresiva diseñada para tu cuerpo, tu ritmo y tus metas reales.</p>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Conoce el plan</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-track">
+    <span>3Fit</span><span class="a">—</span>
+    <span>Movilidad</span><span class="a">—</span>
+    <span>Core</span><span class="a">—</span>
+    <span>Prevención</span><span class="a">—</span>
+    <span>Fortalecimiento</span><span class="a">—</span>
+    <span>3Fit</span><span class="a">—</span>
+    <span>Movilidad</span><span class="a">—</span>
+    <span>Core</span><span class="a">—</span>
+    <span>Prevención</span><span class="a">—</span>
+    <span>Fortalecimiento</span><span class="a">—</span>
+  </div>
+</div>
+
+<!-- LÍNEA DE MÉTODOS -->
+<section class="section-wrap">
+  <p class="section-eyebrow reveal">Propuesta de valor</p>
+  <h2 class="section-title reveal">Línea de<br>Métodos.</h2>
+  <div class="metodos-grid">
+    <div class="metodo-card reveal">
+      <p class="metodo-num">01</p>
+      <h3 class="metodo-name">Movilidad</h3>
+      <ul class="metodo-list">
+        <li>Incremento del rango articular (Flexibilidad)</li>
+        <li>Aumento de temperatura corporal</li>
+        <li>Optimización de la calidad y eficiencia del movimiento</li>
+      </ul>
+    </div>
+    <div class="metodo-card reveal">
+      <p class="metodo-num">02</p>
+      <h3 class="metodo-name">Core</h3>
+      <ul class="metodo-list">
+        <li>Mejora de la estabilidad lumbopélvica</li>
+        <li>Desarrollo de control neuromuscular del tronco</li>
+        <li>Optimiza la transferencia de fuerza entre tren inferior y superior</li>
+      </ul>
+    </div>
+    <div class="metodo-card reveal">
+      <p class="metodo-num">03</p>
+      <h3 class="metodo-name">Prevención y Fortalecimiento</h3>
+      <ul class="metodo-list">
+        <li>Reducción del riesgo de lesiones musculoesqueléticas</li>
+        <li>Corrección de desequilibrios y déficits musculares</li>
+        <li>Fortalecimiento de la musculatura estabilizadora articular</li>
+      </ul>
+    </div>
+    <div class="metodo-card reveal">
+      <p class="metodo-num">04</p>
+      <h3 class="metodo-name">Entrenamiento Tradicional</h3>
+      <ul class="metodo-list">
+        <li>Incremento de la fuerza máxima y submáxima</li>
+        <li>Mejora la capacidad de producción de fuerza muscular: Resistencia, hipertrofia</li>
+        <li>Desarrollar adaptaciones neuromusculares para el rendimiento físico</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PLAN -->
+<section class="plans-bg">
+  <div class="section-wrap">
+    <p class="section-eyebrow reveal">Tu modalidad</p>
+    <h2 class="section-title reveal">Plan de<br>Entrenamiento.</h2>
+    <div class="plans-grid">
+
+      <!-- VIRTUAL -->
+      <div class="plan-card featured reveal">
+        <div>
+          <p class="plan-type">Plan</p>
+          <h3 class="plan-name">Virtual</h3>
+        </div>
+        <div class="plan-price">
+          <span class="price-amount">$99</span>
+          <span class="price-label">USD / mes</span>
+        </div>
+        <div class="divider"></div>
+        <ul class="features">
+          <li>Asesoría completamente virtual: comunicación directa con el coach vía WhatsApp</li>
+          <li>Envío de mesociclo cada 4 semanas</li>
+          <li>Control virtual al finalizar mesociclo (control de carga)</li>
+        </ul>
+        <a class="plan-cta" href="https://wa.me/573243987430?text=Hola%2C%20estoy%20interesado%20en%20el%20Plan%20Virtual%20de%203Fit%20(%2499%20USD%2Fmes).%20%C2%BFMe%20puedes%20dar%20m%C3%A1s%20informaci%C3%B3n%3F" target="_blank">Empezar ahora →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p class="footer-brand">3Fit</p>
+  <p class="footer-sub">Método · Resultado</p>
+  <p>Acceso inmediato al iniciar. Sin contratos. Cancela cuando quieras.</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 100);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
